@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, 'build')));
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -201,7 +201,7 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 app.get('/{*path}', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+  res.sendFile(path.join(__dirname, 'build/index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
