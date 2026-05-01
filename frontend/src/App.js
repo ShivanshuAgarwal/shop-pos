@@ -47,37 +47,29 @@ export default function App() {
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center',
       justifyContent: 'center',
-      background: isMobile ? 'var(--bg)' : '#0f0f0f',
+      background: isMobile ? 'var(--bg)' : '#f1f5f9',
       padding: 20
     }}>
       <div style={{
-        background: isMobile ? 'var(--card)' : 'rgba(255,255,255,0.05)',
-        backdropFilter: isMobile ? 'none' : 'blur(20px)',
-        borderRadius: 24, padding: 36,
+        background: 'white',
+        borderRadius: 20, padding: 36,
         width: '100%', maxWidth: 380,
-        boxShadow: isMobile
-          ? '0 20px 60px rgba(124,58,237,0.15)'
-          : '0 20px 60px rgba(0,0,0,0.5)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
         textAlign: 'center',
-        border: isMobile ? '1px solid var(--border)' : '1px solid rgba(255,255,255,0.1)',
-        animation: 'fadeIn 0.4s ease'
+        border: '1px solid #e2e8f0',
       }}>
         <img src="/bappu.png" alt="Hariom Store" style={{
           width: 80, height: 80, borderRadius: '50%', objectFit: 'cover',
           marginBottom: 16,
-          boxShadow: isMobile
-            ? '0 8px 24px rgba(124,58,237,0.2)'
-            : '0 8px 24px rgba(0,0,0,0.4)'
+          boxShadow: '0 4px 16px rgba(124,58,237,0.2)'
         }} />
         <h2 style={{
-          fontSize: 22, fontWeight: 700,
-          color: isMobile ? 'var(--text)' : 'white',
+          fontSize: 22, fontWeight: 700, color: '#1e293b',
           marginBottom: 4, letterSpacing: -0.4
         }}>Hariom Store</h2>
-        <p style={{
-          color: isMobile ? 'var(--text-secondary)' : 'rgba(255,255,255,0.4)',
-          fontSize: 14, marginBottom: 28
-        }}>Sign in to continue</p>
+        <p style={{ color: '#94a3b8', fontSize: 14, marginBottom: 28 }}>
+          Sign in to continue
+        </p>
 
         <div style={{ position: 'relative', marginBottom: 12 }}>
           <input
@@ -86,14 +78,17 @@ export default function App() {
             value={password}
             onChange={e => { setPassword(e.target.value); setError(''); }}
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            style={{ paddingRight: 48, marginBottom: 0 }}
+            style={{
+              paddingRight: 48, marginBottom: 0,
+              background: '#f8fafc', border: '1.5px solid #e2e8f0',
+              color: '#1e293b', borderRadius: 10
+            }}
             autoFocus
           />
           <button onClick={() => setShowPass(s => !s)} style={{
             position: 'absolute', right: 12, top: '50%',
             transform: 'translateY(-50%)', background: 'none',
-            border: 'none', cursor: 'pointer', fontSize: 18,
-            color: isMobile ? 'var(--text-secondary)' : 'rgba(255,255,255,0.4)'
+            border: 'none', cursor: 'pointer', fontSize: 18, color: '#94a3b8'
           }}>
             {showPass ? '🙈' : '👁️'}
           </button>
@@ -110,7 +105,7 @@ export default function App() {
         {isMobile && (
           <button onClick={() => setDark(d => !d)} style={{
             background: 'none', border: 'none',
-            color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13
+            color: '#94a3b8', cursor: 'pointer', fontSize: 13
           }}>
             {dark ? '☀️ Light mode' : '🌙 Dark mode'}
           </button>
@@ -141,7 +136,6 @@ export default function App() {
 
   return (
     <div className="app">
-      {/* HEADER — shown on both */}
       <header className="header">
         <div className="header-logo">
           <img src="/bappu.png" alt="Hariom Store" />
@@ -173,9 +167,8 @@ export default function App() {
         ))}
       </nav>
 
-      {/* DESKTOP LAYOUT */}
       <div className="desktop-layout">
-        {/* SIDEBAR */}
+        {/* SIDEBAR - desktop only */}
         <aside className="sidebar">
           <div className="sidebar-label">Menu</div>
           {navItems.map(item => (
@@ -188,7 +181,6 @@ export default function App() {
               {item.label}
             </button>
           ))}
-
           <div className="sidebar-logout">
             <button className="sidebar-btn" onClick={handleLogout}>
               <span className="sidebar-icon">🚪</span>
@@ -197,7 +189,6 @@ export default function App() {
           </div>
         </aside>
 
-        {/* MAIN CONTENT */}
         <main className="main">
           {renderPage()}
         </main>
