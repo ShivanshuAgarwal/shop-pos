@@ -28,7 +28,8 @@ export default function App() {
   };
 
   const handleLogout = () => {
-    setRole(null); setPassword(''); setError(''); setShowPass(false); setPage('billing');
+    setRole(null); setPassword(''); setError('');
+    setShowPass(false); setPage('billing');
   };
 
   if (!role) return (
@@ -36,23 +37,24 @@ export default function App() {
       minHeight: '100vh', display: 'flex', alignItems: 'center',
       justifyContent: 'center', background: 'var(--bg)', padding: 20
     }}>
-      <div className="fade-in" style={{
+      <div style={{
         background: 'var(--card)', borderRadius: 24, padding: 32,
         width: '100%', maxWidth: 360,
-        boxShadow: '0 20px 60px rgba(124,58,237,0.15)', textAlign: 'center',
-        border: '1px solid var(--border)'
+        boxShadow: '0 20px 60px rgba(124,58,237,0.15)',
+        textAlign: 'center', border: '1px solid var(--border)',
+        animation: 'fadeIn 0.4s ease'
       }}>
         <img src="/bappu.png" alt="Hariom Store" style={{
           width: 80, height: 80, borderRadius: '50%', objectFit: 'cover',
           marginBottom: 16, boxShadow: '0 8px 24px rgba(124,58,237,0.2)'
         }} />
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 4, letterSpacing: -0.4 }}>
-          Hariom Store
-        </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 28 }}>
+        <h2 style={{
+          fontSize: 22, fontWeight: 700, color: 'var(--text)',
+          marginBottom: 4, letterSpacing: -0.4
+        }}>Hariom Store</h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24 }}>
           Sign in to continue
         </p>
-
         <div style={{ position: 'relative', marginBottom: 12 }}>
           <input
             type={showPass ? 'text' : 'password'}
@@ -64,25 +66,22 @@ export default function App() {
             autoFocus
           />
           <button onClick={() => setShowPass(s => !s)} style={{
-            position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-            background: 'none', border: 'none', cursor: 'pointer', fontSize: 18,
-            color: 'var(--text-secondary)', padding: 4
+            position: 'absolute', right: 12, top: '50%',
+            transform: 'translateY(-50%)', background: 'none',
+            border: 'none', cursor: 'pointer', fontSize: 18,
+            color: 'var(--text-secondary)'
           }}>
             {showPass ? '🙈' : '👁️'}
           </button>
         </div>
-
-        {error && (
-          <div className="alert alert-error" style={{ marginBottom: 12 }}>{error}</div>
-        )}
-
-        <button className="btn btn-primary btn-full" onClick={handleLogin}
-          style={{ borderRadius: 12, padding: '14px', fontSize: 16 }}>
+        {error && <div className="alert alert-error">{error}</div>}
+        <button className="btn btn-primary btn-full"
+          onClick={handleLogin}
+          style={{ borderRadius: 12, padding: 14, fontSize: 16, marginBottom: 12 }}>
           Sign In
         </button>
-
         <button onClick={() => setDark(d => !d)} style={{
-          marginTop: 16, background: 'none', border: 'none',
+          background: 'none', border: 'none',
           color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13
         }}>
           {dark ? '☀️ Light mode' : '🌙 Dark mode'}
@@ -90,17 +89,6 @@ export default function App() {
       </div>
     </div>
   );
-
-  const navItems = role === 'admin'
-    ? [
-        { id: 'dashboard', icon: '📊', label: 'Dashboard' },
-        { id: 'billing', icon: '🧾', label: 'Bill' },
-        { id: 'inventory', icon: '📦', label: 'Inventory' },
-        { id: 'history', icon: '📋', label: 'History' },
-      ]
-    : [
-        { id: 'billing', icon: '🧾', label: 'New Bill' },
-      ];
 
   const renderPage = () => {
     if (page === 'dashboard') return <Dashboard />;
@@ -114,37 +102,37 @@ export default function App() {
       <header className="header">
         <div className="header-logo">
           <img src="/bappu.png" alt="Hariom Store" />
-          <span className="header-title">Hariom Store</span>
+          <h1>Hariom Store</h1>
         </div>
         <div className="header-actions">
           <span className="role-badge">
             {role === 'admin' ? '👑 Admin' : '👤 Cashier'}
           </span>
-          <button className="icon-btn" onClick={() => setDark(d => !d)} title="Toggle theme">
+          <button className="icon-btn" onClick={() => setDark(d => !d)}>
             {dark ? '☀️' : '🌙'}
           </button>
-          <button className="icon-btn" onClick={handleLogout} title="Logout">
-            🚪
-          </button>
+          <button className="icon-btn" onClick={handleLogout}>🚪</button>
         </div>
       </header>
 
-      <main className="main fade-in">
+      <nav className="nav">
+        {role === 'admin' && (
+          <button className={`nav-btn ${page === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setPage('dashboard')}>📊 Dashboard</button>
+        )}
+        <button className={`nav-btn ${page === 'billing' ? 'active' : ''}`}
+          onClick={() => setPage('billing')}>🧾 New Bill</button>
+        {role === 'admin' && <>
+          <button className={`nav-btn ${page === 'inventory' ? 'active' : ''}`}
+            onClick={() => setPage('inventory')}>📦 Inventory</button>
+          <button className={`nav-btn ${page === 'history' ? 'active' : ''}`}
+            onClick={() => setPage('history')}>📋 Bills</button>
+        </>}
+      </nav>
+
+      <main className="main">
         {renderPage()}
       </main>
-
-      <nav className="bottom-nav">
-        {navItems.map(item => (
-          <button
-            key={item.id}
-            className={`nav-item ${page === item.id ? 'active' : ''}`}
-            onClick={() => setPage(item.id)}
-          >
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">{item.label}</span>
-          </button>
-        ))}
-      </nav>
     </div>
   );
 }
