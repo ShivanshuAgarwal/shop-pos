@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dashboard from './pages/Dashboard';
 import Billing from './pages/Billing';
 import Inventory from './pages/Inventory';
@@ -14,42 +14,45 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPass, setShowPass] = useState(false);
+  const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }, [dark]);
 
   const handleLogin = () => {
-    if (password === ADMIN_PASS) {
-      setRole('admin');
-      setPage('dashboard');
-    } else if (password === USER_PASS) {
-      setRole('user');
-      setPage('billing');
-    } else {
-      setError('Wrong password! Try again.');
-    }
+    if (password === ADMIN_PASS) { setRole('admin'); setPage('dashboard'); }
+    else if (password === USER_PASS) { setRole('user'); setPage('billing'); }
+    else setError('Wrong password! Try again.');
   };
 
   const handleLogout = () => {
-    setRole(null);
-    setPassword('');
-    setError('');
-    setPage('billing');
-    setShowPass(false);
+    setRole(null); setPassword(''); setError(''); setShowPass(false); setPage('billing');
   };
 
   if (!role) return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: '#f0f4f8'
+      justifyContent: 'center', background: 'var(--bg)', padding: 20
     }}>
-      <div style={{
-        background: 'white', borderRadius: 16, padding: 32,
-        width: '90%', maxWidth: 360, boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
-        textAlign: 'center'
+      <div className="fade-in" style={{
+        background: 'var(--card)', borderRadius: 24, padding: 32,
+        width: '100%', maxWidth: 360,
+        boxShadow: '0 20px 60px rgba(124,58,237,0.15)', textAlign: 'center',
+        border: '1px solid var(--border)'
       }}>
         <img src="/bappu.png" alt="Hariom Store" style={{
-          height: 80, borderRadius: '50%', marginBottom: 12
+          width: 80, height: 80, borderRadius: '50%', objectFit: 'cover',
+          marginBottom: 16, boxShadow: '0 8px 24px rgba(124,58,237,0.2)'
         }} />
-        <h2 style={{ color: '#2d6a4f', marginBottom: 4 }}>Hariom Store</h2>
-        <p style={{ color: '#718096', fontSize: 13, marginBottom: 24 }}>Enter your password to continue</p>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 4, letterSpacing: -0.4 }}>
+          Hariom Store
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 28 }}>
+          Sign in to continue
+        </p>
+
         <div style={{ position: 'relative', marginBottom: 12 }}>
           <input
             type={showPass ? 'text' : 'password'}
@@ -57,40 +60,47 @@ export default function App() {
             value={password}
             onChange={e => { setPassword(e.target.value); setError(''); }}
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            style={{
-              width: '100%', padding: '12px 16px', borderRadius: 10,
-              border: '1.5px solid #e2e8f0', fontSize: 16,
-              boxSizing: 'border-box', paddingRight: 48
-            }}
+            style={{ paddingRight: 48, marginBottom: 0 }}
             autoFocus
           />
-          <button
-            onClick={() => setShowPass(s => !s)}
-            style={{
-              position: 'absolute', right: 12, top: '50%',
-              transform: 'translateY(-50%)', background: 'none',
-              border: 'none', cursor: 'pointer', fontSize: 18, color: '#718096'
-            }}
-          >
+          <button onClick={() => setShowPass(s => !s)} style={{
+            position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+            background: 'none', border: 'none', cursor: 'pointer', fontSize: 18,
+            color: 'var(--text-secondary)', padding: 4
+          }}>
             {showPass ? '🙈' : '👁️'}
           </button>
         </div>
-        {error && <div style={{
-          color: '#e53e3e', fontSize: 13, marginBottom: 12
-        }}>{error}</div>}
-        <button
-          onClick={handleLogin}
-          style={{
-            width: '100%', padding: '12px', borderRadius: 10,
-            background: '#2d6a4f', color: 'white', border: 'none',
-            fontSize: 16, fontWeight: 700, cursor: 'pointer'
-          }}
-        >
-          Login
+
+        {error && (
+          <div className="alert alert-error" style={{ marginBottom: 12 }}>{error}</div>
+        )}
+
+        <button className="btn btn-primary btn-full" onClick={handleLogin}
+          style={{ borderRadius: 12, padding: '14px', fontSize: 16 }}>
+          Sign In
+        </button>
+
+        <button onClick={() => setDark(d => !d)} style={{
+          marginTop: 16, background: 'none', border: 'none',
+          color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13
+        }}>
+          {dark ? '☀️ Light mode' : '🌙 Dark mode'}
         </button>
       </div>
     </div>
   );
+
+  const navItems = role === 'admin'
+    ? [
+        { id: 'dashboard', icon: '📊', label: 'Dashboard' },
+        { id: 'billing', icon: '🧾', label: 'Bill' },
+        { id: 'inventory', icon: '📦', label: 'Inventory' },
+        { id: 'history', icon: '📋', label: 'History' },
+      ]
+    : [
+        { id: 'billing', icon: '🧾', label: 'New Bill' },
+      ];
 
   const renderPage = () => {
     if (page === 'dashboard') return <Dashboard />;
@@ -101,39 +111,40 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src="/bappu.png" alt="Hariom Store" style={{ height: 40, borderRadius: '50%' }} />
-          <h1 style={{ margin: 0 }}>Hariom Store</h1>
+      <header className="header">
+        <div className="header-logo">
+          <img src="/bappu.png" alt="Hariom Store" />
+          <span className="header-title">Hariom Store</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)' }}>
+        <div className="header-actions">
+          <span className="role-badge">
             {role === 'admin' ? '👑 Admin' : '👤 Cashier'}
           </span>
-          <button onClick={handleLogout} style={{
-            background: 'rgba(255,255,255,0.2)', border: 'none',
-            color: 'white', padding: '6px 12px', borderRadius: 8,
-            cursor: 'pointer', fontSize: 12
-          }}>Logout</button>
+          <button className="icon-btn" onClick={() => setDark(d => !d)} title="Toggle theme">
+            {dark ? '☀️' : '🌙'}
+          </button>
+          <button className="icon-btn" onClick={handleLogout} title="Logout">
+            🚪
+          </button>
         </div>
       </header>
 
-      <nav className="nav">
-        {role === 'admin' && (
-          <button className={`nav-btn ${page === 'dashboard' ? 'active' : ''}`} onClick={() => setPage('dashboard')}>🏠 Dashboard</button>
-        )}
-        <button className={`nav-btn ${page === 'billing' ? 'active' : ''}`} onClick={() => setPage('billing')}>🧾 New Bill</button>
-        {role === 'admin' && (
-          <>
-            <button className={`nav-btn ${page === 'inventory' ? 'active' : ''}`} onClick={() => setPage('inventory')}>📦 Inventory</button>
-            <button className={`nav-btn ${page === 'history' ? 'active' : ''}`} onClick={() => setPage('history')}>📋 Bills</button>
-          </>
-        )}
-      </nav>
-
-      <main className="main">
+      <main className="main fade-in">
         {renderPage()}
       </main>
+
+      <nav className="bottom-nav">
+        {navItems.map(item => (
+          <button
+            key={item.id}
+            className={`nav-item ${page === item.id ? 'active' : ''}`}
+            onClick={() => setPage(item.id)}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }
