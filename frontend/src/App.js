@@ -13,6 +13,7 @@ export default function App() {
   const [role, setRole] = useState(null);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPass, setShowPass] = useState(false);
 
   const handleLogin = () => {
     if (password === ADMIN_PASS) {
@@ -31,6 +32,7 @@ export default function App() {
     setPassword('');
     setError('');
     setPage('billing');
+    setShowPass(false);
   };
 
   if (!role) return (
@@ -48,19 +50,31 @@ export default function App() {
         }} />
         <h2 style={{ color: '#2d6a4f', marginBottom: 4 }}>Hariom Store</h2>
         <p style={{ color: '#718096', fontSize: 13, marginBottom: 24 }}>Enter your password to continue</p>
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={e => { setPassword(e.target.value); setError(''); }}
-          onKeyDown={e => e.key === 'Enter' && handleLogin()}
-          style={{
-            width: '100%', padding: '12px 16px', borderRadius: 10,
-            border: '1.5px solid #e2e8f0', fontSize: 16,
-            marginBottom: 12, boxSizing: 'border-box'
-          }}
-          autoFocus
-        />
+        <div style={{ position: 'relative', marginBottom: 12 }}>
+          <input
+            type={showPass ? 'text' : 'password'}
+            placeholder="Enter password"
+            value={password}
+            onChange={e => { setPassword(e.target.value); setError(''); }}
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            style={{
+              width: '100%', padding: '12px 16px', borderRadius: 10,
+              border: '1.5px solid #e2e8f0', fontSize: 16,
+              boxSizing: 'border-box', paddingRight: 48
+            }}
+            autoFocus
+          />
+          <button
+            onClick={() => setShowPass(s => !s)}
+            style={{
+              position: 'absolute', right: 12, top: '50%',
+              transform: 'translateY(-50%)', background: 'none',
+              border: 'none', cursor: 'pointer', fontSize: 18, color: '#718096'
+            }}
+          >
+            {showPass ? '🙈' : '👁️'}
+          </button>
+        </div>
         {error && <div style={{
           color: '#e53e3e', fontSize: 13, marginBottom: 12
         }}>{error}</div>}
