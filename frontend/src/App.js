@@ -24,6 +24,7 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPass, setShowPass] = useState(false);
+  // Default LIGHT — only dark if user explicitly chose dark before
   const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark');
   const isMobile = useIsMobile();
 
@@ -31,6 +32,13 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     localStorage.setItem('theme', dark ? 'dark' : 'light');
   }, [dark]);
+
+  // Set light on first load if no preference saved
+  useEffect(() => {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }, []);
 
   const handleLogin = () => {
     if (password === ADMIN_PASS) { setRole('admin'); setPage('dashboard'); }
@@ -47,29 +55,35 @@ export default function App() {
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center',
       justifyContent: 'center',
-      background: isMobile ? 'var(--bg)' : '#f1f5f9',
-      padding: 20
+      background: dark ? '#111827' : '#f3f4f6',
+      padding: 20,
+      transition: 'background 0.3s'
     }}>
       <div style={{
-        background: 'white',
+        background: dark ? '#1f2937' : '#ffffff',
         borderRadius: 20, padding: 36,
         width: '100%', maxWidth: 380,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+        boxShadow: dark
+          ? '0 4px 24px rgba(0,0,0,0.4)'
+          : '0 4px 24px rgba(0,0,0,0.08)',
         textAlign: 'center',
-        border: '1px solid #e2e8f0',
+        border: dark ? '1px solid #374151' : '1px solid #e5e7eb',
+        transition: 'background 0.3s'
       }}>
         <img src="/bappu.png" alt="Hariom Store" style={{
           width: 80, height: 80, borderRadius: '50%', objectFit: 'cover',
           marginBottom: 16,
-          boxShadow: '0 4px 16px rgba(124,58,237,0.2)'
+          boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
         }} />
         <h2 style={{
-          fontSize: 22, fontWeight: 700, color: '#1e293b',
+          fontSize: 22, fontWeight: 700,
+          color: dark ? '#f9fafb' : '#111827',
           marginBottom: 4, letterSpacing: -0.4
         }}>Hariom Store</h2>
-        <p style={{ color: '#94a3b8', fontSize: 14, marginBottom: 28 }}>
-          Sign in to continue
-        </p>
+        <p style={{
+          color: dark ? '#9ca3af' : '#6b7280',
+          fontSize: 14, marginBottom: 28
+        }}>Sign in to continue</p>
 
         <div style={{ position: 'relative', marginBottom: 12 }}>
           <input
@@ -80,15 +94,18 @@ export default function App() {
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
             style={{
               paddingRight: 48, marginBottom: 0,
-              background: '#f8fafc', border: '1.5px solid #e2e8f0',
-              color: '#1e293b', borderRadius: 10
+              background: dark ? '#111827' : '#f9fafb',
+              border: `1.5px solid ${dark ? '#374151' : '#e5e7eb'}`,
+              color: dark ? '#f9fafb' : '#111827',
+              borderRadius: 10
             }}
             autoFocus
           />
           <button onClick={() => setShowPass(s => !s)} style={{
             position: 'absolute', right: 12, top: '50%',
             transform: 'translateY(-50%)', background: 'none',
-            border: 'none', cursor: 'pointer', fontSize: 18, color: '#94a3b8'
+            border: 'none', cursor: 'pointer', fontSize: 18,
+            color: dark ? '#9ca3af' : '#6b7280'
           }}>
             {showPass ? '🙈' : '👁️'}
           </button>
@@ -96,20 +113,28 @@ export default function App() {
 
         {error && <div className="alert alert-error">{error}</div>}
 
-        <button className="btn btn-primary btn-full"
+        <button
           onClick={handleLogin}
-          style={{ borderRadius: 12, padding: 14, fontSize: 16, marginBottom: 12 }}>
+          style={{
+            width: '100%', padding: 14, marginBottom: 14,
+            borderRadius: 10, border: 'none', cursor: 'pointer',
+            fontSize: 16, fontWeight: 700,
+            background: dark ? '#4b5563' : '#1f2937',
+            color: '#ffffff',
+            transition: 'opacity 0.2s'
+          }}
+        >
           Sign In
         </button>
 
-        {isMobile && (
-          <button onClick={() => setDark(d => !d)} style={{
-            background: 'none', border: 'none',
-            color: '#94a3b8', cursor: 'pointer', fontSize: 13
-          }}>
-            {dark ? '☀️ Light mode' : '🌙 Dark mode'}
-          </button>
-        )}
+        {/* Dark/Light toggle on login screen */}
+        <button onClick={() => setDark(d => !d)} style={{
+          background: 'none', border: 'none',
+          color: dark ? '#9ca3af' : '#6b7280',
+          cursor: 'pointer', fontSize: 13, fontFamily: 'inherit'
+        }}>
+          {dark ? '☀️ Switch to Light' : '🌙 Switch to Dark'}
+        </button>
       </div>
     </div>
   );
@@ -145,12 +170,11 @@ export default function App() {
           <span className="role-badge">
             {role === 'admin' ? '👑 Admin' : '👤 Cashier'}
           </span>
-          {isMobile && (
-            <button className="icon-btn" onClick={() => setDark(d => !d)}>
-              {dark ? '☀️' : '🌙'}
-            </button>
-          )}
-          <button className="icon-btn" onClick={handleLogout} title="Logout">🚪</button>
+          {/* Dark/Light toggle always visible in header */}
+          <button className="icon-btn" onClick={() => setDark(d => !d)} title="Toggle theme">
+            {dark ? '☀️' : '🌙'}
+          </button>
+          <button className="icon-btn" onClick={handleLogout} title="Sign out">🚪</button>
         </div>
       </header>
 
@@ -168,7 +192,7 @@ export default function App() {
       </nav>
 
       <div className="desktop-layout">
-        {/* SIDEBAR - desktop only */}
+        {/* SIDEBAR — desktop only */}
         <aside className="sidebar">
           <div className="sidebar-label">Menu</div>
           {navItems.map(item => (
