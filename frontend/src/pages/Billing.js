@@ -13,6 +13,7 @@ export default function Billing() {
   const [products, setProducts] = useState([]);
   const [productSearch, setProductSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [hoveredId, setHoveredId] = useState(null);
   const scannerRef = useRef(null);
 
   useEffect(() => {
@@ -134,10 +135,10 @@ export default function Billing() {
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <img src="/bappu.png" alt="Hariom Store" style={{ height: 50, borderRadius: '50%', marginBottom: 4 }} />
           <h2 style={{ fontSize: 20 }}>Hariom Store</h2>
-          <div style={{ fontSize: 12, color: '#718096' }}>{new Date().toLocaleString()}</div>
-          <div style={{ fontWeight: 700, marginTop: 4 }}>{lastBill.bill_number}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{new Date().toLocaleString()}</div>
+          <div style={{ fontWeight: 700, marginTop: 4, color: 'var(--text)' }}>{lastBill.bill_number}</div>
         </div>
-        <div style={{ fontSize: 13, marginBottom: 8 }}>
+        <div style={{ fontSize: 13, marginBottom: 8, color: 'var(--text)' }}>
           <div><b>Customer:</b> {lastBill.customer_name}</div>
           {lastBill.customer_phone && <div><b>Phone:</b> {lastBill.customer_phone}</div>}
           <div><b>Payment:</b> {lastBill.payment_mode.toUpperCase()}</div>
@@ -155,12 +156,12 @@ export default function Billing() {
             ))}
           </tbody>
         </table>
-        <div style={{ marginTop: 12, textAlign: 'right', fontSize: 14 }}>
+        <div style={{ marginTop: 12, textAlign: 'right', fontSize: 14, color: 'var(--text)' }}>
           <div>Subtotal: Rs.{lastBill.total.toFixed(2)}</div>
-          {lastBill.discount > 0 && <div style={{ color: '#e53e3e' }}>Discount: -Rs.{lastBill.discount.toFixed(2)}</div>}
-          <div style={{ fontSize: 20, fontWeight: 700, color: '#2d6a4f' }}>Total: Rs.{lastBill.final_total.toFixed(2)}</div>
+          {lastBill.discount > 0 && <div style={{ color: 'var(--red)' }}>Discount: -Rs.{lastBill.discount.toFixed(2)}</div>}
+          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--green)' }}>Total: Rs.{lastBill.final_total.toFixed(2)}</div>
         </div>
-        <div style={{ textAlign: 'center', marginTop: 12, fontSize: 12, color: '#718096' }}>Thank you! Visit again 🙏</div>
+        <div style={{ textAlign: 'center', marginTop: 12, fontSize: 12, color: 'var(--text-secondary)' }}>Thank you! Visit again 🙏</div>
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
         <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => window.print()}>Print Bill</button>
@@ -183,7 +184,9 @@ export default function Billing() {
         ) : (
           <button className="btn btn-primary btn-full" onClick={startScanner}>Open Camera Scanner</button>
         )}
-        <div style={{ margin: '10px 0', textAlign: 'center', color: '#718096', fontSize: 13 }}>or enter barcode manually</div>
+        <div style={{ margin: '10px 0', textAlign: 'center', color: 'var(--text-secondary)', fontSize: 13 }}>
+          or enter barcode manually
+        </div>
         <div className="row">
           <input
             placeholder="Type barcode and press Enter"
@@ -206,39 +209,29 @@ export default function Billing() {
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           />
           {showDropdown && productSearch.length > 0 && filteredProducts.length > 0 && (
-            <div style={{
-              position: 'absolute', top: '100%', left: 0, right: 0,
-              background: 'white', border: '1.5px solid #e2e8f0',
-              borderRadius: 8, zIndex: 100, maxHeight: 220, overflowY: 'auto',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}>
+            <div className="billing-dropdown">
               {filteredProducts.map(p => (
                 <div
                   key={p.id}
+                  className={`billing-dropdown-item${hoveredId === p.id ? ' hovered' : ''}`}
                   onMouseDown={() => addItem(p)}
-                  style={{
-                    padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid #f0f0f0',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#f7fafc'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                  onMouseEnter={() => setHoveredId(p.id)}
+                  onMouseLeave={() => setHoveredId(null)}
                 >
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
-                    <div style={{ fontSize: 11, color: '#718096' }}>{p.barcode || 'No barcode'} • Stock: {p.stock} {p.unit}</div>
+                    <div className="billing-dropdown-name">{p.name}</div>
+                    <div className="billing-dropdown-sub">
+                      {p.barcode || 'No barcode'} • Stock: {p.stock} {p.unit}
+                    </div>
                   </div>
-                  <div style={{ fontWeight: 700, color: '#2d6a4f' }}>Rs.{p.price}</div>
+                  <div className="billing-dropdown-price">Rs.{p.price}</div>
                 </div>
               ))}
             </div>
           )}
           {showDropdown && productSearch.length > 0 && filteredProducts.length === 0 && (
-            <div style={{
-              position: 'absolute', top: '100%', left: 0, right: 0,
-              background: 'white', border: '1.5px solid #e2e8f0',
-              borderRadius: 8, zIndex: 100, padding: '12px', color: '#718096', fontSize: 13
-            }}>
-              No products found
+            <div className="billing-dropdown">
+              <div className="billing-dropdown-empty">No products found</div>
             </div>
           )}
         </div>
@@ -246,7 +239,11 @@ export default function Billing() {
 
       <div className="card">
         <h2>Bill Items</h2>
-        {items.length === 0 && <p style={{ color: '#718096', fontSize: 13 }}>No items yet. Scan or search a product!</p>}
+        {items.length === 0 && (
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
+            No items yet. Scan or search a product!
+          </p>
+        )}
         {items.length > 0 && (
           <table className="bill-table">
             <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Sub</th><th></th></tr></thead>
@@ -261,7 +258,9 @@ export default function Billing() {
                   </td>
                   <td>Rs.{item.price}</td>
                   <td>Rs.{item.subtotal.toFixed(2)}</td>
-                  <td><button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: 12 }} onClick={() => removeItem(i)}>X</button></td>
+                  <td>
+                    <button className="btn btn-danger" style={{ padding: '4px 8px', fontSize: 12 }} onClick={() => removeItem(i)}>✕</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -279,10 +278,12 @@ export default function Billing() {
             <option value="cash">💵 Cash</option>
             <option value="upi">📱 UPI</option>
           </select>
-          <div style={{ textAlign: 'right', marginBottom: 12, fontSize: 14 }}>
+          <div style={{ textAlign: 'right', marginBottom: 12, fontSize: 14, color: 'var(--text)' }}>
             <div>Subtotal: Rs.{total.toFixed(2)}</div>
-            {discount > 0 && <div style={{ color: '#e53e3e' }}>Discount: -Rs.{parseFloat(discount).toFixed(2)}</div>}
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#2d6a4f' }}>Total: Rs.{finalTotal.toFixed(2)}</div>
+            {discount > 0 && <div style={{ color: 'var(--red)' }}>Discount: -Rs.{parseFloat(discount).toFixed(2)}</div>}
+            <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--green)' }}>
+              Total: Rs.{finalTotal.toFixed(2)}
+            </div>
           </div>
           <button className="btn btn-success btn-full" onClick={saveBill}>Save and Generate Bill</button>
         </div>
