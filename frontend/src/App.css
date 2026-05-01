@@ -40,16 +40,15 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+/* =================== MOBILE (default) =================== */
 .app {
   max-width: 100%;
-  margin: 0 auto;
   min-height: 100vh;
 }
 
-/* HEADER */
 .header {
   background: var(--purple);
-  padding: 14px 24px;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -111,12 +110,11 @@ body {
 
 .icon-btn:active { transform: scale(0.92); }
 
-/* NAV */
 .nav {
   display: flex;
   background: var(--card);
   border-bottom: 1px solid var(--border);
-  padding: 0 16px;
+  padding: 0 12px;
   gap: 4px;
   position: sticky;
   top: 62px;
@@ -126,10 +124,10 @@ body {
 }
 
 .nav-btn {
-  padding: 14px 20px;
+  padding: 13px 16px;
   border: none;
   background: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
@@ -140,26 +138,25 @@ body {
 }
 
 .nav-btn:hover { color: var(--purple); }
-
 .nav-btn.active {
   color: var(--purple);
   border-bottom-color: var(--purple);
 }
 
-/* MAIN */
 .main {
-  padding: 20px 24px;
+  padding: 16px;
   min-height: calc(100vh - 120px);
-  max-width: 1200px;
-  margin: 0 auto;
 }
+
+.sidebar { display: none; }
+.desktop-content { display: block; }
 
 /* CARDS */
 .card {
   background: var(--card);
   border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 16px;
+  padding: 20px;
+  margin-bottom: 12px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   transition: background 0.3s, border 0.3s;
@@ -167,10 +164,10 @@ body {
 }
 
 .card h2 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   letter-spacing: -0.2px;
 }
 
@@ -183,26 +180,21 @@ body {
 .stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-@media (min-width: 768px) {
-  .stats { grid-template-columns: repeat(4, 1fr); }
-  .main { padding: 28px 40px; }
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .stat-card {
   background: var(--card);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 16px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   transition: background 0.3s;
 }
 
 .stat-card .value {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--purple);
@@ -254,31 +246,11 @@ input:focus, select:focus {
 }
 
 .btn:active { transform: scale(0.97); }
-
-.btn-primary {
-  background: var(--purple);
-  color: white;
-  box-shadow: 0 4px 12px rgba(124,58,237,0.25);
-}
-
+.btn-primary { background: var(--purple); color: white; box-shadow: 0 4px 12px rgba(124,58,237,0.25); }
 .btn-primary:hover { background: var(--purple-dark); }
-
-.btn-success {
-  background: var(--green);
-  color: white;
-  box-shadow: 0 4px 12px rgba(16,185,129,0.25);
-}
-
-.btn-danger {
-  background: var(--red);
-  color: white;
-}
-
-.btn-secondary {
-  background: var(--purple-light);
-  color: var(--purple);
-}
-
+.btn-success { background: var(--green); color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.25); }
+.btn-danger { background: var(--red); color: white; }
+.btn-secondary { background: var(--purple-light); color: var(--purple); }
 .btn-full { width: 100%; margin-bottom: 8px; }
 
 /* BADGES */
@@ -319,7 +291,7 @@ input:focus, select:focus {
 
 .bill-table th {
   text-align: left;
-  padding: 10px 8px;
+  padding: 8px 6px;
   color: var(--text-secondary);
   font-weight: 600;
   font-size: 11px;
@@ -329,33 +301,30 @@ input:focus, select:focus {
 }
 
 .bill-table td {
-  padding: 12px 8px;
+  padding: 10px 6px;
   border-bottom: 1px solid var(--border);
   color: var(--text);
 }
 
 .bill-table tr:last-child td { border-bottom: none; }
 
-/* LIST ITEMS */
 .low-stock-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
+  padding: 12px 0;
   border-bottom: 1px solid var(--border);
   gap: 12px;
 }
 
 .low-stock-item:last-child { border-bottom: none; }
 
-/* ROW */
 .row {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* SCANNER */
 .scanner-box {
   width: 100%;
   border-radius: var(--radius);
@@ -363,9 +332,272 @@ input:focus, select:focus {
   background: #000;
 }
 
-.scanner-box video {
-  width: 100%;
-  display: block;
+.scanner-box video { width: 100%; display: block; }
+
+/* =================== DESKTOP (768px+) =================== */
+@media (min-width: 768px) {
+
+  body {
+    background: #0f0f0f;
+  }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* DESKTOP HEADER */
+  .header {
+    background: rgba(15,15,15,0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: none;
+    padding: 0 32px;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+  }
+
+  .header-logo img {
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+
+  .header h1 {
+    font-size: 17px;
+    color: white;
+    font-weight: 600;
+  }
+
+  .role-badge {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .icon-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+  }
+
+  .icon-btn:hover {
+    background: rgba(255,255,255,0.15);
+  }
+
+  /* HIDE MOBILE NAV */
+  .nav { display: none; }
+
+  /* DESKTOP LAYOUT */
+  .desktop-layout {
+    display: flex;
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    min-width: 220px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    padding: 24px 12px;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 12px;
+    margin-bottom: 8px;
+    margin-top: 16px;
+  }
+
+  .sidebar-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-btn:hover {
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .sidebar-btn.active {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-weight: 600;
+  }
+
+  .sidebar-icon { font-size: 18px; }
+
+  .sidebar-logout {
+    margin-top: auto;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 16px;
+  }
+
+  /* DESKTOP MAIN */
+  .main {
+    margin-left: 220px;
+    padding: 32px 40px;
+    min-height: calc(100vh - 60px);
+    background: #0f0f0f;
+    flex: 1;
+  }
+
+  /* DESKTOP CARDS - glassmorphism */
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+  }
+
+  .card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 20px;
+  }
+
+  /* DESKTOP STATS */
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  .stat-card .value {
+    font-size: 28px;
+    color: white;
+  }
+
+  .stat-card .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+  }
+
+  /* DESKTOP INPUTS */
+  input, select, textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    border-radius: 10px;
+  }
+
+  input::placeholder { color: rgba(255,255,255,0.3); }
+
+  input:focus, select:focus {
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.08);
+  }
+
+  select option {
+    background: #1f2937;
+    color: white;
+  }
+
+  /* DESKTOP BUTTONS */
+  .btn-primary {
+    background: white;
+    color: #111;
+    box-shadow: none;
+  }
+
+  .btn-primary:hover {
+    background: #f0f0f0;
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .btn-success {
+    background: #10b981;
+    color: white;
+  }
+
+  .btn-danger {
+    background: rgba(239,68,68,0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+
+  /* DESKTOP TABLE */
+  .bill-table th {
+    color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .bill-table td {
+    color: rgba(255,255,255,0.8);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* DESKTOP LIST */
+  .low-stock-item {
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* DESKTOP ALERTS */
+  .alert-info {
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* DESKTOP BADGES */
+  .badge-purple {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* DESKTOP TEXT */
+  p, span, div, label {
+    color: inherit;
+  }
 }
 
 /* PRINT */
@@ -373,6 +605,8 @@ input:focus, select:focus {
   .no-print { display: none !important; }
   .nav { display: none !important; }
   .header { display: none !important; }
-  .main { padding: 0 !important; }
-  .card { box-shadow: none !important; border: none !important; }
+  .sidebar { display: none !important; }
+  .main { padding: 0 !important; margin: 0 !important; }
+  .card { box-shadow: none !important; border: none !important; background: white !important; }
+  .bill-table th, .bill-table td { color: black !important; }
 }
