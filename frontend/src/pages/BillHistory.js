@@ -85,7 +85,8 @@ export default function BillHistory() {
     const matchSearch = b.bill_number.includes(search) ||
       b.customer_name.toLowerCase().includes(search.toLowerCase()) ||
       (b.customer_phone && b.customer_phone.includes(search));
-    const matchDate = !dateFilter || b.created_at.startsWith(dateFilter);
+    const matchDate = !dateFilter || new Date(b.created_at).toLocaleDateString('en-CA') === dateFilter;
+    
     return matchSearch && matchDate;
   });
 
