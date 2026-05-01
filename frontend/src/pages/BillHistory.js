@@ -6,6 +6,7 @@ export default function BillHistory() {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState('');
   const [alert, setAlert] = useState(null);
+  const [dateFilter, setDateFilter] = useState('');
 
   const showAlert = (msg, type = 'success') => {
     setAlert({ msg, type });
@@ -80,11 +81,13 @@ export default function BillHistory() {
     }
   };
 
-  const filtered = bills.filter(b =>
-    b.bill_number.includes(search) ||
-    b.customer_name.toLowerCase().includes(search.toLowerCase()) ||
-    (b.customer_phone && b.customer_phone.includes(search))
-  );
+  const filtered = bills.filter(b => {
+    const matchSearch = b.bill_number.includes(search) ||
+      b.customer_name.toLowerCase().includes(search.toLowerCase()) ||
+      (b.customer_phone && b.customer_phone.includes(search));
+    const matchDate = !dateFilter || b.created_at.startsWith(dateFilter);
+    return matchSearch && matchDate;
+  });
 
   const cashTotal = bills.reduce((s, b) => b.payment_mode === 'cash' ? s + b.final_total : s, 0);
   const upiTotal = bills.reduce((s, b) => b.payment_mode === 'upi' ? s + b.final_total : s, 0);
@@ -157,9 +160,10 @@ export default function BillHistory() {
           </button>
         </div>
         <input
-          placeholder="Search by bill number, customer name or phone..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          type="date"
+          value={dateFilter}
+          onChange={e => setDateFilter(e.target.value)}
+          style={{ marginTop: 8 }}
         />
         {filtered.length === 0 && <p style={{ color: '#718096', fontSize: 13 }}>No bills found.</p>}
         {filtered.map(b => (
